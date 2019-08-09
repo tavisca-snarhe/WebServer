@@ -6,4 +6,12 @@
     <RootNamespace>WebServer</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Apps\FileSystem.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
 </Project>
