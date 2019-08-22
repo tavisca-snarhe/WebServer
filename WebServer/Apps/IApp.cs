@@ -1,9 +1,9 @@
-﻿using System.Net;
+﻿using System.Net.Sockets;
 
 namespace WebServer
 {
     public interface IApp
     {
-        void HandleRequest(HttpListenerContext context);
+        void HandleRequest(Socket context);
     }
 }

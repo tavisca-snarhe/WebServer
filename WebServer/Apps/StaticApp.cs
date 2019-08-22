@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 
 namespace WebServer
 {
@@ -47,6 +48,10 @@ namespace WebServer
             }
 
             context.Response.OutputStream.Close();
+        }
+
+        public void HandleRequest(Socket context)
+        {
         }
     }
 }
