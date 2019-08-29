@@ -4,6 +4,6 @@ namespace WebServer
 {
     public interface IApp
     {
-        void HandleRequest(Socket context);
+        void HandleRequest(HTTPContext context);
     }
 }

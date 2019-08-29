@@ -12,6 +12,7 @@ namespace WebServer
 
         public InvalidDomainException(string message) : base(message)
         {
+            Console.WriteLine(message);
         }
 
         public InvalidDomainException(string message, Exception innerException) : base(message, innerException)

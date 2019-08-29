@@ -1,19 +1,34 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace WebServer
 {
-    public class FileServer
+    public class FileSystem
     {
         private string _rootDirectory;
 
-        public FileServer(string rootDirectory)
+        public FileSystem(string rootDirectory)
         {
             _rootDirectory = rootDirectory;
         }
 
-        public Stream ReadFile(string path)
+        private string ResolveVirtualPath(string virtualPath)
         {
-
+            return _rootDirectory + virtualPath;
         }
+
+        public string ReadFile(string virtualPath)
+        {
+            try
+            {
+                string filePath = ResolveVirtualPath(virtualPath);
+                return File.ReadAllText(filePath);
+            }
+            catch(Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

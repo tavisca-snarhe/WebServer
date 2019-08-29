@@ -1,61 +1,52 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Net.Sockets;
 
 namespace WebServer
 {
     internal class ApiApp : IApp
     {
-        public void HandleRequest(HttpListenerContext context)
+
+        Routes routes;
+
+        public ApiApp()
         {
-            Console.WriteLine(context.Request.RawUrl);
-            Console.WriteLine(context.Request.HttpMethod);
+            routes = new Routes();
+        }
 
-            if (context.Request.RawUrl == "/year" && context.Request.HttpMethod == "POST")
+        public void HandleRequest(HTTPContext context)
+        {
+            string HttpMethod = context.Request.Method;
+            string Route = context.Request.AbsoluteURL;
+            string RouteHandler = GetRouteHandler(HttpMethod, Route);
+
+            if(RouteHandler != "No Method Found")
             {
-                var data_text = new StreamReader(context.Request.InputStream,
-                                                 context.Request.ContentEncoding)
-                                                 .ReadToEnd();
-                var json =  System.Web.HttpUtility.UrlDecode(data_text);
-                JObject requestBody = JObject.Parse(json);
-                Console.WriteLine(requestBody);
-                string year = (string) requestBody.SelectToken("year");
-
-                if (year!=null)
-                {
-                    string value = Int32.Parse(year) % 4 == 0 ? "true" : "false";
-                    JObject responseJSON = JObject.Parse(@"{'IsLeap': '" + value + @"'}");
-                    Console.WriteLine(responseJSON);
-                    byte[] buf = Encoding.UTF8.GetBytes(responseJSON.ToString());
-                    context.Response.ContentLength64 = buf.Length;
-                    context.Response.ContentType = "application/json";
-                    context.Response.StatusCode = (int)HttpStatusCode.OK;
-                    context.Response.OutputStream.Write(buf, 0, buf.Length);
-                }
-                else
-                {
-                    byte[] buf = Encoding.UTF8.GetBytes("missing required data in request.");
-                    context.Response.ContentLength64 = buf.Length;
-                    context.Response.OutputStream.Write(buf, 0, buf.Length);
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                }
+                JObject requestBody = JObject.Parse(context.Request.Body);
+                JObject result = (JObject)routes.GetType().GetMethod(RouteHandler).Invoke(routes, new object[] { requestBody });
+                context.Response = new HTTPResponse(result.ToString(), 200, "OK", "application/json");
+                context.SendResponse();
             }
             else
             {
-                byte[] buf = Encoding.UTF8.GetBytes("invalid request.");
-                context.Response.ContentLength64 = buf.Length;
-                context.Response.OutputStream.Write(buf, 0, buf.Length);
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response = new HTTPResponse("Error", 500, "NOT_FOUND", "application/json");
+                context.SendResponse();
             }
-            
-            context.Response.OutputStream.Close();
+
         }
 
-        public void HandleRequest(Socket context)
+        private string GetRouteHandler(string HTTPMethod, string Route)
         {
+            foreach (var prop in typeof(Routes).GetMethods())
+            {
+                var attrs = (MethodTypeAttribute[])prop.GetCustomAttributes (typeof(MethodTypeAttribute), false);
+                foreach (var attr in attrs)
+                {
+
+                    if (attr.HTTPMethod == HTTPMethod && Route == attr.Route)
+                        return prop.Name;
+                }
+            }
+            return "No Method Found";
         }
     }
 }

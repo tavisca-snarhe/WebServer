@@ -30,16 +30,18 @@ namespace WebServer
         public HTTPRequest(Socket socket)
         {
             Parse(socket);
-            //Console.WriteLine("Host = " + Host);
-            //Console.WriteLine("AbsoluteURL = " + AbsoluteURL);
-            //Console.WriteLine("Method = " + Method);
-            //Console.WriteLine("ContentType = " + ContentType);
-            //Console.WriteLine("Body = " + Body);
+            Console.WriteLine("Done Parsing in HTTPRequest");
+            Console.WriteLine("Host = " + Host);
+            Console.WriteLine("AbsoluteURL = " + AbsoluteURL);
+            Console.WriteLine("Method = " + Method);
+            Console.WriteLine("ContentType = " + ContentType);
+            Console.WriteLine("Body = " + Body);
         }
 
         public void Parse(Socket socket)
         {
             string request = ExtractRequest(socket);
+            Method = GetProperty(request, "", " ");
             Host = GetProperty(request, "Host: ", "\n");
             Host = Host.Substring(0, Host.IndexOf((char)13));
             AbsoluteURL = GetProperty(request, " ", " ");
@@ -49,6 +51,8 @@ namespace WebServer
 
         private string GetProperty(string request, string property, string end)
         {
+            if (request.Length == 0 || request.IndexOf(property) == -1)
+                return "";
             int pFrom = request.IndexOf(property) + property.Length;
             int pTo = request.IndexOf(end, pFrom);
             if ((pFrom == 0 && pTo == 0) || (pFrom > pTo))

@@ -5,36 +5,39 @@ using System.Threading.Tasks;
 
 namespace WebServer
 {
-    public class RequestListener
+    public class HTTPListener
     {
         private Socket _serverSocket;
         private IPEndPoint _localEndPoint;
+        private int _port;
 
-        public RequestListener()
+        public HTTPListener()
         {
+            _port = 80;
             _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _localEndPoint = new IPEndPoint(IPAddress.Any, 80);
+            _localEndPoint = new IPEndPoint(IPAddress.Any, _port);
             _serverSocket.Bind(_localEndPoint);
         }
 
         public void Start()
         {
             _serverSocket.Listen(10);
-            Console.WriteLine("Server listening on port:" + 80);
+            Console.WriteLine($"Server listening on port:{_port}");
         }
 
-        public Socket GetSocket()
+        public HTTPContext GetContext()
         {
-            Task<Socket> getSocket = Task.Run(() => {
+            Task<HTTPContext> Context= Task.Run(() => {
                                             while (true)
                                             {
                                                 Socket senderSocket = _serverSocket.Accept();
                                                 Console.WriteLine("connected");
-                                                return senderSocket;
+                                                HTTPContext context = new HTTPContext(senderSocket);
+                                                Console.WriteLine(context.Request.Method);
+                                                return context;
                                             }
                                        });
-            
-            return getSocket.GetAwaiter().GetResult();
+            return Context.GetAwaiter().GetResult();
         }
 
         public void Stop()

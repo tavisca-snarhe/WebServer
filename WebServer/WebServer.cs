@@ -1,66 +1,41 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
 
 namespace WebServer
 {
-
     public class WebServer
     {
-        private RequestListener _listener;
+        private HTTPListener _listener;
         private Dispatcher _dispatcher;
         private ServerConfig _configs;
-        private RequestContext _requestContext;
 
         public WebServer()
         {
-            ConfigureServer();
-            _listener = new RequestListener();
-            _dispatcher = new Dispatcher(_configs);
-        }
-
-
-        private void ConfigureServer()
-        {
             _configs = new ServerConfig();
-            _configs.AddNewApp("myserver.com", new StaticApp("C:/Users/snarhe/source/htdocs"));
-            _configs.AddNewApp("api.com", new ApiApp());
+            _dispatcher = new Dispatcher(_configs);
+            _listener = new HTTPListener();
         }
-        
+
         public void Start()
         {
             _listener.Start();
-            Console.WriteLine("Listening on " + "http://" + GetMyIP() + "/");
-
+            Console.WriteLine($"Listening on http://{Utility.GetMyIPv4()}/");
             while (true)
             {
-                try
-                {
-                    Socket context = _listener.GetSocket();
-                    Console.WriteLine("Got new request");
-                    ProcessRequest(context);
-                }
-                catch (HttpListenerException) { break; }
-                catch (InvalidOperationException) { break; }
+                HTTPContext context = _listener.GetContext();
+                Console.WriteLine("Got new request");
+                ProcessRequest(context);
             }  
         }
 
-        private void ProcessRequest(object listenerContext)
+        private void ProcessRequest(HTTPContext context)
         {
-            Socket context = (Socket)listenerContext;
-            _requestContext = new RequestContext(context);
-            IApp app = _dispatcher.GetApp(_requestContext.HttpRequest.Host);
+            IApp app = _dispatcher.GetApp(context.Request.Host);
             app.HandleRequest(context);
         }
 
         public void Stop()
         {
             _listener.Stop();
-        }
-        private static string GetMyIP()
-        {
-            string IPv4 = Dns.GetHostEntry(Dns.GetHostName()).AddressList[2].ToString();
-            return IPv4;
         }
     }
 }
