@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace WebServer
 {
     public class HTTPResponse
     {
-        public ResponseHeader Header;
+        public HTTPHeader Header;
         public string Response;
 
         public HTTPResponse(string data, int statusCode, string status, string contentType)
         {
-            Header = new ResponseHeader(statusCode, status, contentType);
+            Header = new HTTPHeader(statusCode, status, contentType);
             Response = data;
         }
 

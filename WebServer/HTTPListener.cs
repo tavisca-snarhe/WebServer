@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -22,7 +21,6 @@ namespace WebServer
         public void Start()
         {
             _serverSocket.Listen(10);
-            Console.WriteLine($"Server listening on port:{_port}");
         }
 
         public HTTPContext GetContext()
@@ -31,9 +29,7 @@ namespace WebServer
                                             while (true)
                                             {
                                                 Socket senderSocket = _serverSocket.Accept();
-                                                Console.WriteLine("connected");
                                                 HTTPContext context = new HTTPContext(senderSocket);
-                                                Console.WriteLine(context.Request.Method);
                                                 return context;
                                             }
                                        });

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 
 namespace WebServer
@@ -30,12 +29,12 @@ namespace WebServer
         public HTTPRequest(Socket socket)
         {
             Parse(socket);
-            Console.WriteLine("Done Parsing in HTTPRequest");
-            Console.WriteLine("Host = " + Host);
-            Console.WriteLine("AbsoluteURL = " + AbsoluteURL);
-            Console.WriteLine("Method = " + Method);
-            Console.WriteLine("ContentType = " + ContentType);
-            Console.WriteLine("Body = " + Body);
+            //Console.WriteLine("Done Parsing in HTTPRequest");
+            //Console.WriteLine("Host = " + Host);
+            //Console.WriteLine("AbsoluteURL = " + AbsoluteURL);
+            //Console.WriteLine("Method = " + Method);
+            //Console.WriteLine("ContentType = " + ContentType);
+            //Console.WriteLine("Body = " + Body);
         }
 
         public void Parse(Socket socket)

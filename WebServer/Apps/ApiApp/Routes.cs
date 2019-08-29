@@ -9,6 +9,7 @@ namespace WebServer
         public JObject Year(JObject requestBody)
         {
             string year = (string)requestBody.SelectToken("year");
+
             if (year == null)
                 return new JObject(new JProperty("Error", "Missing Required field."));
             if (Int32.Parse(year) % 4 == 0)
@@ -21,6 +22,7 @@ namespace WebServer
         public JObject Age(JObject requestBody)
         {
             string age = (string)requestBody.SelectToken("age");
+
             if (age == null)
                 return new JObject(new JProperty("Error", "Missing Required field."));
             if (Int32.Parse(age) > 18)
@@ -29,6 +31,10 @@ namespace WebServer
                 return new JObject(new JProperty("Adult", false));
         }
 
-
+        [MethodType("GET", "/age")]
+        public JObject Get_Age(JObject requestBody)
+        {
+            return new JObject(new JProperty("Adult", true));
+        }
     }
 }

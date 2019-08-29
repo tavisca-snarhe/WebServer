@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace WebServer
+﻿namespace WebServer
 {
     public class Dispatcher
     {

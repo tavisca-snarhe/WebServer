@@ -2,11 +2,11 @@
 
 namespace WebServer
 {
-    public class ResponseHeader
+    public class HTTPHeader
     {
         private StringBuilder _header;
 
-        public ResponseHeader(int statusCode=200, string status="OK", string contentType="text/html")
+        public HTTPHeader(int statusCode=200, string status="OK", string contentType="text/html")
         {
             _header = new StringBuilder();
             _header.AppendLine($"HTTP/1.1 {statusCode} {status}");

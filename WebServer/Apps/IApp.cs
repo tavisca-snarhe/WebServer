@@ -1,6 +1,4 @@
-﻿using System.Net.Sockets;
-
-namespace WebServer
+﻿namespace WebServer
 {
     public interface IApp
     {
