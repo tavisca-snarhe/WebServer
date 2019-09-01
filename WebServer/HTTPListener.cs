@@ -25,15 +25,9 @@ namespace WebServer
 
         public HTTPContext GetContext()
         {
-            Task<HTTPContext> Context= Task.Run(() => {
-                                            while (true)
-                                            {
-                                                Socket senderSocket = _serverSocket.Accept();
-                                                HTTPContext context = new HTTPContext(senderSocket);
-                                                return context;
-                                            }
-                                       });
-            return Context.GetAwaiter().GetResult();
+            Socket senderSocket = _serverSocket.Accept();
+            HTTPContext context = new HTTPContext(senderSocket);
+            return context;
         }
 
         public void Stop()
